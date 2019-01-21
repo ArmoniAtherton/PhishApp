@@ -1,11 +1,9 @@
 package tcss450.uw.edu.phishapp;
 
-import android.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
 
 import tcss450.uw.edu.phishapp.model.Credentials;
 
@@ -43,24 +41,22 @@ public class MainActivity extends AppCompatActivity implements
     //This method could be used for communicating between fragments
     @Override
     public void onLoginSuccess(Credentials theUser, String jwt) {
-            Bundle args = new Bundle();
+        Bundle args = new Bundle();
 
-            int count = getSupportFragmentManager().getBackStackEntryCount();
-            for(int i = 0; i < count; ++i) {
-                getSupportFragmentManager().popBackStack();
-            }
-            args.putSerializable("Success", theUser);
-            SuccessFragment successFragment = new SuccessFragment();
-            successFragment.setArguments(args);
-//            args.putSerializable("Object", theUser);
-            FragmentTransaction transaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frame_main_container, successFragment);
-//                    .addToBackStack(null);
-            // Commit the transaction
-            transaction.commit();
-
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        for (int i = 0; i < count; ++i) {
+            getSupportFragmentManager().popBackStack();
         }
+        args.putSerializable("Success", theUser);
+        SuccessFragment successFragment = new SuccessFragment();
+        successFragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_container, successFragment);
+        // Commit the transaction
+        transaction.commit();
+
+    }
 
     @Override
     public void onRegisterSuccess(Credentials theUser) {
@@ -68,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements
         Bundle args = new Bundle();
 
         int count = getSupportFragmentManager().getBackStackEntryCount();
-        for(int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; ++i) {
             getSupportFragmentManager().popBackStack();
         }
 
@@ -79,15 +75,7 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.frame_main_container, loginFragment);
-//                .addToBackStack(null);
         // Commit the transaction
         transaction.commit();
-
     }
-
-    //Don't need get ride of this method signature.
-//    @Override
-//    public void onSuccessUserFragmentInteraction(Credentials theUser) {
-//
-//    }
 }

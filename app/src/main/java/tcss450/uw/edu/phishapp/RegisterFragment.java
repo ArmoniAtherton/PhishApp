@@ -4,7 +4,6 @@ package tcss450.uw.edu.phishapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,34 +41,21 @@ public class RegisterFragment extends Fragment {
         //Use a method reference to add the OnClickListener
         b.setOnClickListener(this::onRegisterClicked);
 
-//        EditText userEmail = (EditText) getActivity().findViewById(R.id.fragRegister_username_editText);
-//        EditText userPassword = (EditText) getActivity().findViewById(R.id.fragRegister_password_editText);
-//        EditText userRetypePassword = (EditText) getActivity().findViewById(R.id.fragRegister_retypePassword_editText);
-
-
         return v;
 
     }
     //This will call the the register fragment to be called.
     public void onRegisterClicked(View view) {
         if (mListener != null) {
-//            Log.wtf("H", "wronggggggg");
-//            getActivity().getSupportFragmentManager().popBackStack();
-            EditText userEmail = (EditText) getActivity().findViewById(R.id.fragRegister_username_editText);
+
+            EditText userEmail = (EditText) getActivity().findViewById(R.id.fragRegister_email_editText);
             EditText userPassword = (EditText) getActivity().findViewById(R.id.fragRegister_password_editText);
             EditText userRetypePassword = (EditText) getActivity().findViewById(R.id.fragRegister_retypePassword_editText);
 
             String email = userEmail.getText().toString();
-            Log.wtf("H", "Email: " + email.length());
 
-//            userEmail.setError(null);
-//            userPassword.setError(null);
-//            userRetypePassword.setError(null);
-
-            //TODO check if user already exists!
             //Check if email isn't empty.
             if (email.length() > 0 ) {
-                Log.wtf("H", "wronggggggg Again");
                 //Make sure password text box is not empty.
                 if (userPassword.length() != 0 ) {
                     //check retype password
@@ -118,13 +104,6 @@ public class RegisterFragment extends Fragment {
     public boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onLoginSuccess(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {

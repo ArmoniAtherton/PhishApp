@@ -41,13 +41,7 @@ public class LoginFragment extends Fragment {
             container.removeAllViews();
         }
 
-//        Credentials c = (Credentials) savedInstanceState.getSerializable("Object");
-
-//        if (savedInstanceState != null) {
-//            Credentials c = (Credentials)getArguments().getSerializable("Object");
-//            Log.wtf("Test", "TEST, " + savedInstanceState.getSerializable("Object"));
-//        }
-        // Inflate the layout for this fragment
+        // Inflate the layout for this fragment.
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 
         Button b = (Button) v.findViewById(R.id.fragLogin_register_button);
@@ -64,19 +58,17 @@ public class LoginFragment extends Fragment {
 
         if (savedInstanceState != null) {
             Credentials c = (Credentials) savedInstanceState.getSerializable("Login");
-            EditText userEmail = (EditText) v.findViewById(R.id.fragLogin_username_editText);
+            EditText userEmail = (EditText) v.findViewById(R.id.fragLogin_email_editText);
             EditText userPassword = (EditText) v.findViewById(R.id.fragLogin_password_editText);
             userEmail.setText(c.getEmail());
             userPassword.setText(c.getPassword());
 
         }
 
-
-//        validUsers.add(new Credentials.Builder("armoni@uw.edu", "654321").build());
-
         return v;
 
     }
+
     //This will call the the register fragment to be called.
     public void onRegisterButtonClicked(View view) {
         if (mListener != null) {
@@ -91,7 +83,7 @@ public class LoginFragment extends Fragment {
     public void onLoginButtonClicked(View view) {
         if (mListener != null) {
 
-            EditText userEmail = (EditText) getActivity().findViewById(R.id.fragLogin_username_editText);
+            EditText userEmail = (EditText) getActivity().findViewById(R.id.fragLogin_email_editText);
             EditText userPassword = (EditText) getActivity().findViewById(R.id.fragLogin_password_editText);
             String email = userEmail.getText().toString();
             String password = userPassword.getText().toString();
@@ -108,12 +100,7 @@ public class LoginFragment extends Fragment {
                         if (verifiedUser(email, password)) {
                             //Now check if password is correct
                             if (verifiedUserPassword(email, password, userPassword)) {
-//                                validUsers.add(new Credentials.Builder("armoni@uw.edu", "654321").build());
-
                                 mListener.onLoginSuccess(validUsers.get(myUser),null);
-
-//
-//                                getActivity().getSupportFragmentManager().popBackStack();
                             } else {
                                 userPassword.setError("Password Incorrect, Try Again!");
                             }
@@ -166,13 +153,6 @@ public class LoginFragment extends Fragment {
     public boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onLoginSuccess(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
