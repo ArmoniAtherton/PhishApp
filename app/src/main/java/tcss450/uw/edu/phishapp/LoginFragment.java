@@ -41,6 +41,12 @@ public class LoginFragment extends Fragment {
             container.removeAllViews();
         }
 
+        Credentials temp =  new Credentials.Builder(
+                "athera@u.com",
+                "aaaaaa")
+                .build();
+        validUsers.add(temp);
+
         // Inflate the layout for this fragment.
         View v = inflater.inflate(R.layout.fragment_login, container, false);
 

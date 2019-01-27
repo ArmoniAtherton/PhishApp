@@ -1,5 +1,6 @@
 package tcss450.uw.edu.phishapp;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,17 +45,24 @@ public class MainActivity extends AppCompatActivity implements
         Bundle args = new Bundle();
 
         int count = getSupportFragmentManager().getBackStackEntryCount();
+        //Delete everything off back stack.
         for (int i = 0; i < count; ++i) {
             getSupportFragmentManager().popBackStack();
         }
-        args.putSerializable("Success", theUser);
-        SuccessFragment successFragment = new SuccessFragment();
-        successFragment.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frame_main_container, successFragment);
-        // Commit the transaction
-        transaction.commit();
+        //This will open up a new activity.
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        //Pass the credentials to the new activity.
+        intent.putExtra("Login", theUser);
+        startActivity(intent);
+
+//        args.putSerializable("Success", theUser);
+//        SuccessFragment successFragment = new SuccessFragment();
+//        successFragment.setArguments(args);
+//        FragmentTransaction transaction = getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.frame_main_container, successFragment);
+//        // Commit the transaction
+//        transaction.commit();
 
     }
 

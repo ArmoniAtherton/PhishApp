@@ -5,4 +5,14 @@
     <string name="edit_text_retype_password_name">Retype Password</string>
     <string name="button_register_email">REGISTER</string>
     <string name="button_sign_in_name">SIGN IN</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Phish App</string>
+    <string name="nav_header_subtitle">TCSS 450 Labs</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
