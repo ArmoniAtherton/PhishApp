@@ -1,6 +1,7 @@
 package tcss450.uw.edu.phishapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,11 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import tcss450.uw.edu.phishapp.model.Credentials;
+import tcss450.uw.edu.phishapp.utils.SendPostAsyncTask;
 
 
 /**
@@ -28,6 +34,7 @@ public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFrag";
     public static ArrayList<Credentials> validUsers = new ArrayList<>();
     private int myUser;
+    private Credentials mCredentials;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -88,45 +95,56 @@ public class LoginFragment extends Fragment {
     //This will call the the Login/Success fragment to be called.
     public void onLoginButtonClicked(View view) {
         if (mListener != null) {
+            attemptLogin(view);
 
-            EditText userEmail = (EditText) getActivity().findViewById(R.id.fragLogin_email_editText);
-            EditText userPassword = (EditText) getActivity().findViewById(R.id.fragLogin_password_editText);
-            String email = userEmail.getText().toString();
-            String password = userPassword.getText().toString();
-            userEmail.setError(null);
-            userPassword.setError(null);
-
-            //Make sure email text box is not empty.
-            if (email.length() != 0 ) {
-                //Make sure password text box is not empty.
-                if (password.length() != 0 ) {
-                    //Check if email is in correct format.
-                    if (isEmailValid(email)) {
-                        //If the user exists
-                        if (verifiedUser(email, password)) {
-                            //Now check if password is correct
-                            if (verifiedUserPassword(email, password, userPassword)) {
-                                mListener.onLoginSuccess(validUsers.get(myUser),null);
-                            } else {
-                                userPassword.setError("Password Incorrect, Try Again!");
-                            }
-                        } else { //User does not exist
-//                        userEmail.setError("Account not found, Register to make a account!");
-                            Toast.makeText(this.getContext(), "Please Register!",
-                                            Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        userEmail.setError("Invalid Email, Please Try Again!");
-                    }
-                } else {
-                    userPassword.setError("Empty, must enter password!");
-                }
-
-            } else {
-                userEmail.setError("Empty, must enter email!");
-            }
         }
     }
+
+    private void attemptLogin(final View theButton) {
+
+        EditText emailEdit = getActivity().findViewById(R.id.fragLogin_email_editText);
+        EditText passwordEdit = getActivity().findViewById(R.id.fragLogin_password_editText);
+
+        boolean hasError = false;
+        if (emailEdit.getText().length() == 0) {
+            hasError = true;
+            emailEdit.setError("Field must not be empty.");
+        }  else if (emailEdit.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
+            hasError = true;
+            emailEdit.setError("Field must contain a valid email address.");
+        }
+        if (passwordEdit.getText().length() == 0) {
+            hasError = true;
+            passwordEdit.setError("Field must not be empty.");
+        }
+
+        if (!hasError) {
+            Credentials credentials = new Credentials.Builder(
+                    emailEdit.getText().toString(),
+                    passwordEdit.getText().toString())
+                    .build();
+
+            //build the web service URL
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_login))
+                    .build();
+
+            //build the JSONObject
+            JSONObject msg = credentials.asJSONObject();
+
+            mCredentials = credentials;
+
+            //instantiate and execute the AsyncTask.
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPreExecute(this::handleLoginOnPre)
+                    .onPostExecute(this::handleLoginOnPost)
+                    .onCancelled(this::handleErrorsInTask)
+                    .build().execute();
+        }
+    }
+
 
 
     private boolean verifiedUserPassword(String theEmail, String thePassword, EditText theUserPassword) {
@@ -177,6 +195,72 @@ public class LoginFragment extends Fragment {
         mListener = null;
     }
 
+
+    /**
+     * Handle errors that may occur during the AsyncTask.
+     * @param result the error message provide from the AsyncTask
+     */
+    private void handleErrorsInTask(String result) {
+        Log.e("ASYNC_TASK_ERROR",  result);
+    }
+
+    /**
+     * Handle the setup of the UI before the HTTP call to the webservice.
+     */
+    private void handleLoginOnPre() {
+        mListener.onWaitFragmentInteractionShow();
+    }
+
+    /**
+     * Handle onPostExecute of the AsynceTask. The result from our webservice is
+     * a JSON formatted String. Parse it for success or failure.
+     * @param result the JSON formatted String response from the web service
+     */
+    private void handleLoginOnPost(String result) {
+        try {
+            JSONObject resultsJSON = new JSONObject(result);
+            boolean success =
+                    resultsJSON.getBoolean(
+                            getString(R.string.keys_json_login_success));
+
+            if (success) {
+                //Login was successful. Switch to the loadSuccessFragment.
+                mListener.onLoginSuccess(mCredentials,
+                        resultsJSON.getString(
+                                getString(R.string.keys_json_login_jwt)));
+                return;
+            } else {
+                //Login was unsuccessful. Don’t switch fragments and
+                // inform the user
+                ((TextView) getView().findViewById(R.id.fragLogin_email_editText))
+                        .setError("Login Unsuccessful");
+            }
+            mListener.onWaitFragmentInteractionHide();
+        } catch (JSONException e) {
+            //It appears that the web service did not return a JSON formatted
+            //String or it did not have what we expected in it.
+            Log.e("JSON_PARSE_ERROR",  result
+                    + System.lineSeparator()
+                    + e.getMessage());
+
+            mListener.onWaitFragmentInteractionHide();
+            ((TextView) getView().findViewById(R.id.fragLogin_email_editText))
+                    .setError("Login Unsuccessful");
+        }
+    }
+
+//    @Override
+//    public void onWaitFragmentInteractionShow() {
+//
+//    }
+//
+//    @Override
+//    public void onWaitFragmentInteractionHide() {
+//
+//    }
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -187,8 +271,15 @@ public class LoginFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnLoginFragmentInteractionListener {
+    public interface OnLoginFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onLoginSuccess(Credentials theUser, String jwt);
         void onRegisterClick();
+        void onWaitFragmentInteractionShow();
+        void onWaitFragmentInteractionHide();
     }
+
+//    public interface OnFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
+//        void onWaitFragmentInteractionShow();
+//        void onWaitFragmentInteractionHide();
+//    }
 }

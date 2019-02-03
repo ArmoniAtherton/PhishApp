@@ -19,10 +19,10 @@ import java.util.List;
  */
 public class MyBlogRecyclerViewAdapter extends RecyclerView.Adapter<MyBlogRecyclerViewAdapter.ViewHolder> {
 
-    private final BlogPost[] mValues;
+    private final List<BlogPost> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyBlogRecyclerViewAdapter(BlogPost[] blogs, OnListFragmentInteractionListener listener) {
+    public MyBlogRecyclerViewAdapter(List<BlogPost> blogs, OnListFragmentInteractionListener listener) {
         mValues = blogs;
         mListener = listener;
     }
@@ -36,12 +36,12 @@ public class MyBlogRecyclerViewAdapter extends RecyclerView.Adapter<MyBlogRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues[position];
-        holder.mIdView.setText(mValues[position].getTitle());
-        holder.mContentView.setText(mValues[position].getPubDate());
-        holder.mSamplingView.setText(Html.fromHtml(mValues[position].getTeaser()));
-//        CharSequence styledText = holder.mSamplingView.getText();
-//        holder.mSamplingView.setText(styledText);
+        holder.mItem = mValues.get(position);
+        holder.mIdView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).getPubDate());
+        holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getTeaser()));
+//        CharSequence styledText = holder.mVenueView.getText();
+//        holder.mVenueView.setText(styledText);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +57,7 @@ public class MyBlogRecyclerViewAdapter extends RecyclerView.Adapter<MyBlogRecycl
 
     @Override
     public int getItemCount() {
-        return mValues.length;
+        return mValues.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,9 +70,9 @@ public class MyBlogRecyclerViewAdapter extends RecyclerView.Adapter<MyBlogRecycl
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.blog_title);
-            mContentView = (TextView) view.findViewById(R.id.publish_date);
-            mSamplingView = (TextView) view.findViewById(R.id.sampling);
+            mIdView = (TextView) view.findViewById(R.id.fragBlog_blogTitle_textView);
+            mContentView = (TextView) view.findViewById(R.id.fragBlog_publishDate_textView);
+            mSamplingView = (TextView) view.findViewById(R.id.fragBlog_sampling_textView);
         }
 
         @Override

@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.Serializable;
+
 import tcss450.uw.edu.phishapp.model.Credentials;
 
 public class MainActivity extends AppCompatActivity implements
         LoginFragment.OnLoginFragmentInteractionListener,
-        RegisterFragment.OnRegisterFragmentInteractionListener {
+        RegisterFragment.OnRegisterFragmentInteractionListener,
+        WaitFragment.OnFragmentInteractionListener{
 
 
     @Override
@@ -53,17 +56,9 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         //Pass the credentials to the new activity.
         intent.putExtra("Login", theUser);
+        intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
         startActivity(intent);
-
-//        args.putSerializable("Success", theUser);
-//        SuccessFragment successFragment = new SuccessFragment();
-//        successFragment.setArguments(args);
-//        FragmentTransaction transaction = getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.frame_main_container, successFragment);
-//        // Commit the transaction
-//        transaction.commit();
-
+        finish();
     }
 
     @Override
@@ -85,5 +80,22 @@ public class MainActivity extends AppCompatActivity implements
                 .replace(R.id.frame_main_container, loginFragment);
         // Commit the transaction
         transaction.commit();
+    }
+
+    @Override
+    public void onWaitFragmentInteractionShow() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_main_container, new WaitFragment(), "WAIT")
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onWaitFragmentInteractionHide() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentByTag("WAIT"))
+                .commit();
     }
 }
