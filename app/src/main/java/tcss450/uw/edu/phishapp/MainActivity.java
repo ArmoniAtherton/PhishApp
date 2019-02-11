@@ -1,6 +1,8 @@
 package tcss450.uw.edu.phishapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements
         for (int i = 0; i < count; ++i) {
             getSupportFragmentManager().popBackStack();
         }
+
         //This will open up a new activity.
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         //Pass the credentials to the new activity.

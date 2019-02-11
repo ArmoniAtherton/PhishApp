@@ -168,8 +168,8 @@ public class RegisterFragment extends Fragment {
                 //Login was unsuccessful. Don’t switch fragments and
                 // inform the user
                 ((TextView) getView().findViewById(R.id.fragRegister_register_button))
-                        .setError("Login Unsuccessful");
-                Toast.makeText(getActivity(), "Login Unsuccessful!",
+                        .setError("Register Unsuccessful");
+                Toast.makeText(getActivity(), "Register Unsuccessful!",
                         Toast.LENGTH_LONG).show();
             }
             mListener.onWaitFragmentInteractionHide();
